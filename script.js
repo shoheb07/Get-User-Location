@@ -1,36 +1,34 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+function getLocation() {
+    const status = document.getElementById("status");
+    const lat = document.getElementById("lat");
+    const lon = document.getElementById("lon");
 
-.container {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    width: 320px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+    if (navigator.geolocation) {
+        status.textContent = "Fetching location...";
 
-button {
-    padding: 10px 20px;
-    border: none;
-    background: #667eea;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background: #5648c2;
-}
-
-.output {
-    margin-top: 20px;
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                lat.textContent = position.coords.latitude;
+                lon.textContent = position.coords.longitude;
+                status.textContent = "Location found!";
+            },
+            (error) => {
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        status.textContent = "User denied the request.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        status.textContent = "Location information unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        status.textContent = "Request timed out.";
+                        break;
+                    default:
+                        status.textContent = "An unknown error occurred.";
+                }
+            }
+        );
+    } else {
+        status.textContent = "Geolocation is not supported by this browser.";
+    }
 }
